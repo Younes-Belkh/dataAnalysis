@@ -30,12 +30,15 @@ export default async function cleanJsonToCsv() {
     return {
       property_id: p?.propertyId,
       name: info?.displayName || info?.localeName || info?.defaultName,
+      search_city: p?.city, // city you searched (added by fetcher)
+      search_city_id: p?.cityId, // 1194 / 78480
+      members: p?.members,
       property_type: info?.propertyType,
       star_rating: info?.rating,
       review_score: reviews?.score,
       review_count: reviews?.reviewCount,
       country: address?.country?.name,
-      city: address?.city?.name,
+      city: address?.city?.name, // city Agoda reports for the property
       area: address?.area?.name,
       latitude: info?.geoInfo?.latitude,
       longitude: info?.geoInfo?.longitude,
@@ -53,7 +56,10 @@ export default async function cleanJsonToCsv() {
     ...rows.map((row) => headers.map((h) => escapeCsv(row[h])).join(",")),
   ];
 
+  // Ensure results folder exists
+  fs.mkdirSync("./results", { recursive: true });
+
   // "\uFEFF" is the UTF-8 BOM so Excel reads Arabic/French/symbols properly
   fs.writeFileSync("./results/JSproperties.csv", "\uFEFF" + csvLines.join("\n"), "utf8");
-  console.log(`Saved ${rows.length} rows to ./results/properties.csv`);
+  console.log(`Saved ${rows.length} rows to ./results/JSproperties.csv`);
 }

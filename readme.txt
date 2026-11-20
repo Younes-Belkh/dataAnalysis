@@ -16,8 +16,8 @@ nearly same script is written in both javascript and python
 
 * to run javascript script:
 1 - install node
-2 - cd into "/dataAnalysis/javascript/" and run "npm install" (this will install needed libraries automatically)
-3 - cd back into "/dataAnalysis" (just "cd ..")
+2 - cd into "/dataAnalysis/javascript/" and run "npm install" (this will install needed libraries)
+3 - cd back into "dataAnalysis/" (just "cd ..")
 4 - type "node main"
 
 

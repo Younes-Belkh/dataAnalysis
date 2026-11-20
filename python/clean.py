@@ -2,6 +2,7 @@ import csv
 import json
 from pathlib import Path
 
+
 # Helper function to safely dig into nested JSON without crashing
 def dig(data, *keys):
     for key in keys:
@@ -12,6 +13,7 @@ def dig(data, *keys):
         else:
             return None
     return data
+
 
 def clean_json_to_csv():
     input_path = Path("./output/PYresponse.json")
@@ -25,7 +27,6 @@ def clean_json_to_csv():
     rows = []
 
     for p in properties:
-        # Using our clean 'dig' helper instead of ugly .get() chains
         link = dig(p, "content", "informationSummary", "propertyLinks", "propertyPage")
         price = (
             dig(p, "pricing", "offers", 0, "roomOffers", 0, "room", "pricing", 0, "price", "perNight", "exclusive", "display")
@@ -35,12 +36,15 @@ def clean_json_to_csv():
         rows.append({
             "property_id": dig(p, "propertyId"),
             "name": dig(p, "content", "informationSummary", "displayName") or dig(p, "content", "informationSummary", "defaultName"),
+            "search_city": dig(p, "city"),        # city you searched (added by fetcher)
+            "search_city_id": dig(p, "cityId"),   # 1194 / 78480
+            "members": dig(p, "members"),
             "property_type": dig(p, "content", "informationSummary", "propertyType"),
             "star_rating": dig(p, "content", "informationSummary", "rating"),
             "review_score": dig(p, "content", "reviews", "cumulative", "score"),
             "review_count": dig(p, "content", "reviews", "cumulative", "reviewCount"),
             "country": dig(p, "content", "informationSummary", "address", "country", "name"),
-            "city": dig(p, "content", "informationSummary", "address", "city", "name"),
+            "city": dig(p, "content", "informationSummary", "address", "city", "name"),  # city Agoda reports
             "area": dig(p, "content", "informationSummary", "address", "area", "name"),
             "latitude": dig(p, "content", "informationSummary", "geoInfo", "latitude"),
             "longitude": dig(p, "content", "informationSummary", "geoInfo", "longitude"),
@@ -54,7 +58,8 @@ def clean_json_to_csv():
         print("No data found to write to CSV.")
         return
 
-    # Write to CSV
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
     headers = list(rows[0].keys())
     with open(output_path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=headers)
