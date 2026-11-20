@@ -1,6 +1,8 @@
 # main.py
 from python.fetch import fetch_agoda_data
 from python.clean import clean_json_to_csv
+from python.analyze import analyze
+from python.visualize import visualize
 
 if __name__ == "__main__":
     print("--- STAGE 1: FETCHING DATA ---")
@@ -8,5 +10,11 @@ if __name__ == "__main__":
 
     print("\n--- STAGE 2: CLEANING TO CSV ---")
     clean_json_to_csv()
-    
+
+    print("\n--- STAGE 3: ANALYSIS & ML ---")
+    analyze()
+
+    print("\n--- STAGE 4: VISUALIZATIONS ---")
+    visualize()
+
     print("\nDone!")
