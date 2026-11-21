@@ -166,6 +166,25 @@ def clean_json_to_csv():
     print(f"  → Corrected {formatted} formatting errors.")
 
     # ==================================================================
+    # CLEANING STEP 3 — Check and remove duplicate records
+    # ==================================================================
+    unique_rows = []
+    seen_keys = set()
+    duplicates_removed = 0
+
+    for row in rows:
+        # A record is unique by property_id + search criteria (members)
+        key = (row.get("property_id"), row.get("members"))
+        if key in seen_keys:
+            duplicates_removed += 1
+        else:
+            seen_keys.add(key)
+            unique_rows.append(row)
+
+    rows = unique_rows
+    print(f"  → Checked and removed {duplicates_removed} duplicate records.")
+
+    # ==================================================================
     # Write cleaned CSV
     # ==================================================================
     output_path.parent.mkdir(parents=True, exist_ok=True)
